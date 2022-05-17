@@ -1,27 +1,29 @@
-# service_provenance
+# Audit Trail Service
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg?style=for-the-badge)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-green?style=for-the-badge)](https://www.python.org/)
 
-This service is using the FastAPI python framework.
+## About
 
-## Installation
+Service for managing audit logs.
 
+### Start
 
-### Install requirements
+1. Install [Docker](https://www.docker.com/get-started/).
+2. Start container with project application.
 
-`pip install -r requirements.txt`
+       docker compose up
 
-Run the service with uvicorn
-`python run.py`
+3. Visit http://127.0.0.1:5078/v1/api-doc for API documentation.
 
-### Docker
+### Development
 
-*docker-compose*
+1. Install [Poetry](https://python-poetry.org/docs/#installation).
+2. Install dependencies.
 
-`docker-compose build`
-`docker-compose up`
+       poetry install
 
-### Unit Test
-*directly run command below
-`pytest`
+3. Add environment variables into `.env` taking in consideration `.env.schema`.
+4. Run application.
+
+       poetry run python run.py

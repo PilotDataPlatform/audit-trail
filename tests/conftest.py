@@ -13,15 +13,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import Enum
+import pytest
+from async_asgi_testclient import TestClient as TestAsyncClient
+
+from app.config import ConfigClass
+from run import app
 
 
-class EDataType(Enum):
-    nfs_file = 0
-    nfs_file_processed = 1
-    nfs_file_download = 2
+@pytest.fixture
+def test_async_client():
+    return TestAsyncClient(app)
 
 
-class EPipeline(Enum):
-    dicom_edit = 0
-    data_transfer = 1
+@pytest.fixture(autouse=True)
+def mock_settings(monkeypatch):
+    monkeypatch.setattr(ConfigClass, 'ELASTIC_SEARCH_SERVICE', 'http://elastic_search/')
+    monkeypatch.setattr(ConfigClass, 'ATLAS_API', 'http://atlas_url/')
+    monkeypatch.setattr(ConfigClass, 'NEO4J_SERVICE', 'http://neo4j_service/')

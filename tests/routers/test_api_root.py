@@ -13,15 +13,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import Enum
+from app.config import ConfigClass
 
 
-class EDataType(Enum):
-    nfs_file = 0
-    nfs_file_processed = 1
-    nfs_file_download = 2
-
-
-class EPipeline(Enum):
-    dicom_edit = 0
-    data_transfer = 1
+async def test_root_request_should_return_app_status(test_async_client):
+    response = await test_async_client.get('/')
+    assert response.status_code == 200
+    assert response.json() == {'message': 'Service_Audit_Trail On, Version: ' + ConfigClass.version}
