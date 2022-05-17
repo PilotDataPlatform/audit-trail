@@ -55,3 +55,7 @@ tests/logs
 
 # dotenv
 .env
+
+# coverage
+.coverage
+coverage.xml
