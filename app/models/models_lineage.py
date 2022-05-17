@@ -1,25 +1,36 @@
-from pydantic import BaseModel, Field
-from .base_models import APIResponse
-from app.commons.logger_services.logger_factory_service import SrvLoggerFactory
+# Copyright (C) 2022 Indoc Research
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-_logger = SrvLoggerFactory('api_lineage_action').get_logger()
+from common import LoggerFactory
+from pydantic import BaseModel
+from pydantic import Field
+
+from app.models.base_models import APIResponse
+
+_logger = LoggerFactory('api_lineage_action').get_logger()
 
 
 class GETLineage(BaseModel):
     geid: str
-    direction: str = "INPUT"
+    direction: str = 'INPUT'
 
 
 class GETLineageResponse(APIResponse):
-    result: dict = Field({}, example={
-         "code": 200,
-        "error_msg": "",
-        "page": 0,
-        "total": 1,
-        "num_of_pages": 1,
-        "result": [
-        ]
-    })
+    result: dict = Field(
+        {}, example={'code': 200, 'error_msg': '', 'page': 0, 'total': 1, 'num_of_pages': 1, 'result': []}
+    )
 
 
 class POSTLineage(BaseModel):
@@ -31,15 +42,9 @@ class POSTLineage(BaseModel):
 
 
 class POSTLineageResponse(APIResponse):
-    result: dict = Field({}, example={
-         "code": 200,
-        "error_msg": "",
-        "page": 0,
-        "total": 1,
-        "num_of_pages": 1,
-        "result": [
-        ]
-    })
+    result: dict = Field(
+        {}, example={'code': 200, 'error_msg': '', 'page': 0, 'total': 1, 'num_of_pages': 1, 'result': []}
+    )
 
 
 class CreationForm:
@@ -108,6 +113,7 @@ class CreationForm:
     def process_timestamp(self, process_timestamp):
         self._attribute_map['process_timestamp'] = process_timestamp
 
+
 def creation_form_factory(post_form):
     try:
         my_form = CreationForm()
@@ -115,10 +121,9 @@ def creation_form_factory(post_form):
         my_form.output_geid = post_form.output_geid
         my_form.project_code = post_form.project_code
         my_form.pipeline_name = post_form.pipeline_name
-        my_form.description = getattr(post_form, "description", '')
-        my_form.process_timestamp = getattr(post_form, "process_timestamp", None)
+        my_form.description = getattr(post_form, 'description', '')
+        my_form.process_timestamp = getattr(post_form, 'process_timestamp', None)
         return my_form
-    except Exception as e:
-        _logger.error(str(e))
-        raise(Exception('Invalid post form: ' + str(post_form)))
-    
+    except Exception:
+        _logger.exception('Error creating form factory.')
+        raise Exception('Invalid post form: ' + str(post_form))

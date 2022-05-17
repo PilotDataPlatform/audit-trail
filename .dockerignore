@@ -1,11 +1,13 @@
+# Folders
 .git
-.gitignore
-.gitlab-ci*
-gitlab-ci*
-Dockerfile*
+.venv
+.env
+venv
+env
 kubernetes
-Jenkinsfile
 
-# Misc
+# Files
 .DS_Store
-.env.local
+.gitignore
+Dockerfile*
+Jenkinsfile
