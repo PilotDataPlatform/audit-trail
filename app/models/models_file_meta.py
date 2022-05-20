@@ -36,7 +36,6 @@ class FileMetaCreation(BaseModel):
     file_name: str
     atlas_guid: str
     display_path: str
-    dcm_id: Optional[str] = None
     project_code: str
     attributes: Optional[list] = []
     priority: Optional[int] = 20
