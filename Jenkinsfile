@@ -49,8 +49,10 @@ pipeline {
       when {branch "develop"}
       steps{
         script {
-                customImage = docker.build("registry-gitlab.indocresearch.org/pilot/service_audit_trail:$commit", ".")
+            docker.withRegistry("$registryURLBase", registryCredential) {
+                customImage = docker.build("$registryURL:$commit", ".")
                 customImage.push()
+            }    
         }
       }
     }
