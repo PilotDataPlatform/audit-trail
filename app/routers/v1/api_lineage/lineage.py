@@ -18,6 +18,9 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi_utils.cbv import cbv
 
+import httpx
+
+from app.config import ConfigClass
 from app.commons.atlas.lineage_manager import SrvLineageMgr
 from app.models.base_models import EAPIResponseCode
 from app.models.models_lineage import GETLineage
@@ -26,7 +29,6 @@ from app.models.models_lineage import POSTLineage
 from app.models.models_lineage import POSTLineageResponse
 from app.models.models_lineage import creation_form_factory
 from app.resources.error_handler import catch_internal
-from app.resources.neo4j_helper import http_query_node
 
 router = APIRouter()
 _API_NAMESPACE = 'api_lineage'
@@ -44,7 +46,6 @@ class Lineage:
         api_response = GETLineageResponse()
         geid = params.geid
         type_name = 'file_data'
-
         response = await self.lineage_mgr.get(geid, type_name, params.direction)
         self._logger.debug(f'Response of get is {response.text}')
         if response.status_code == 200:
@@ -131,18 +132,23 @@ class Lineage:
                 continue
 
             geid = value['attributes']['global_entity_id']
-            node_res = await http_query_node(geid)
-            if node_res.status_code != 200:
-                raise Exception('Neo4j error')
-            node_data = node_res.json()
-            self._logger.info(f'Node in Neo4j is: {str(node_data)}')
+            async with httpx.AsyncClient(verify=False) as client:
+                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{geid}')
+            if response.status_code != 200:
+                raise Exception('Error calling metadata service')
+            node_data = response.json()['result']
+            self._logger.info(f'Entity in metadata service is: {str(node_data)}')
             if len(node_data) == 0:
                 continue
 
-            labels = node_data[0]['labels']
+            labels = ['Greenroom' if node_data['zone'] == 0 else 'Core']
+            if node_data['archived']:
+                labels.append('TrashFile')
+
             value['attributes']['zone'] = labels
 
-            if 'display_path' in node_data[0]:
-                value['attributes']['display_path'] = node_data[0]['display_path']
+            if node_data['parent_path']:
+                display_path = '{}/{}'.format(node_data['parent_path'].replace('.', '/'), node_data['name'])
+                value['attributes']['display_path'] = display_path
             else:
                 value['attributes']['display_path'] = value['attributes']['full_path']

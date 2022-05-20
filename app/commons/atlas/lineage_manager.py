@@ -48,8 +48,8 @@ class SrvLineageMgr(metaclass=MetaService):
         )
         self._logger.info(f'_________typenames is: {typenames}')
         # to atlas post form
-        input_file_name = await self.get_file_name_by_geid(creation_form.input_geid)
-        output_file_name = await self.get_file_name_by_geid(creation_form.output_geid)
+        input_file_name = creation_form.input_name
+        output_file_name = creation_form.output_name
 
         self._logger.debug(f'[SrvLineageMgr]input_file_path: {creation_form.input_geid}')
         self._logger.debug(f'[SrvLineageMgr]output_file_path: {creation_form.output_geid}')
@@ -127,14 +127,3 @@ class SrvLineageMgr(metaclass=MetaService):
         else:
             self._logger.error(f'Error when get_guid_by_geid: {search_res.text}')
             return None
-
-    async def get_file_name_by_geid(self, geid):
-        node_query_url = ConfigClass.NEO4J_SERVICE + 'nodes/geid/%s' % (geid)
-        async with httpx.AsyncClient(verify=False) as client:
-            response = await client.get(node_query_url)
-
-        # here if we dont find any node then return None
-        if len(response.json()) == 0:
-            return None
-
-        return response.json()[0].get('name')

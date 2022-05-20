@@ -36,6 +36,8 @@ class GETLineageResponse(APIResponse):
 class POSTLineage(BaseModel):
     input_geid: str
     output_geid: str
+    input_name: str
+    output_name: str
     project_code: str
     pipeline_name: str
     description: str
@@ -119,6 +121,8 @@ def creation_form_factory(post_form):
         my_form = CreationForm()
         my_form.input_geid = post_form.input_geid
         my_form.output_geid = post_form.output_geid
+        my_form.input_name = post_form.input_name
+        my_form.output_name = post_form.output_name
         my_form.project_code = post_form.project_code
         my_form.pipeline_name = post_form.pipeline_name
         my_form.description = getattr(post_form, 'description', '')

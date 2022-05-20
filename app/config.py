@@ -48,11 +48,9 @@ class Settings(BaseSettings):
     ATLAS_ADMIN: str
     ATLAS_PASSWD: str
 
-    METADATA_API: str
-
     ELASTIC_SEARCH_SERVICE: str
     ATLAS_API: str
-    NEO4J_SERVICE: str
+    METADATA_SERVICE: str
 
     OPEN_TELEMETRY_ENABLED: bool = False
     OPEN_TELEMETRY_HOST: str = '127.0.0.1'
@@ -63,7 +61,6 @@ class Settings(BaseSettings):
 
         self.ELASTIC_SEARCH_SERVICE += '/'
         self.ATLAS_API += '/'
-        self.NEO4J_SERVICE += '/v1/neo4j/'
 
     class Config:
         env_file = '.env'
