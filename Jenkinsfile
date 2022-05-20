@@ -36,7 +36,6 @@ pipeline {
             export VAULT_CRT=${VAULT_CRT}
             pip install --user poetry==1.1.12
             ${HOME}/.local/bin/poetry config virtualenvs.in-project true
-            ${HOME}/.local/bin/poetry config http-basic.pilot 
             ${HOME}/.local/bin/poetry install --no-root --no-interaction
             ${HOME}/.local/bin/poetry run pytest --verbose -c tests/pytest.ini
             """
