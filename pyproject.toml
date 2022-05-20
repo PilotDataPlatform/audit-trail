@@ -45,8 +45,7 @@ env = [
     "ATLAS_PASSWD=",
     "ATLAS_API=",
     "METADATA_API=",
-    "ELASTIC_SEARCH_SERVICE=",
-    "NEO4J_SERVICE="
+    "ELASTIC_SEARCH_SERVICE="
 ]
 log_cli = "true"
 addopts = "--cov=app --cov-report term --cov-report=xml"
