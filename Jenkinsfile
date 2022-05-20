@@ -1,8 +1,8 @@
 pipeline {
     agent { label 'small' }
     environment {
-      imagename_dev = "ghcr.io/pilotdataplatform/audit_trail"
-      imagename_staging = "ghcr.io/pilotdataplatform/audit_trail"
+      imagename_dev = "ghcr.io/pilotdataplatform/audit-trail"
+      imagename_staging = "ghcr.io/pilotdataplatform/audit-trail"
       commit = sh(returnStdout: true, script: 'git describe --always').trim()
       registryCredential = 'pilot-ghcr'
       registryURL = 'https://github.com/PilotDataPlatform/audit-trail.git'
@@ -50,7 +50,7 @@ pipeline {
       steps{
         script {
             docker.withRegistry("$registryURLBase", registryCredential) {
-                customImage = docker.build("$registryURL:$commit", ".")
+                customImage = docker.build("$imagename_dev:$commit", ".")
                 customImage.push()
             }    
         }
