@@ -13,15 +13,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import httpx
 from common import LoggerFactory
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi_utils.cbv import cbv
 
-import httpx
-
-from app.config import ConfigClass
 from app.commons.atlas.lineage_manager import SrvLineageMgr
+from app.config import ConfigClass
 from app.models.base_models import EAPIResponseCode
 from app.models.models_lineage import GETLineage
 from app.models.models_lineage import GETLineageResponse
