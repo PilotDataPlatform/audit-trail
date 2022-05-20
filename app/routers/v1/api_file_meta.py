@@ -64,7 +64,6 @@ class APIAuditLog:
         file_size = request_payload.file_size
         atlas_guid = request_payload.atlas_guid
         display_path = request_payload.display_path
-        dcm_id = request_payload.dcm_id
         attributes = request_payload.attributes
         project_code = request_payload.project_code
         priority = request_payload.priority
@@ -87,7 +86,6 @@ class APIAuditLog:
             'file_size': file_size,
             'atlas_guid': atlas_guid,
             'display_path': display_path,
-            'dcm_id': dcm_id,
             'attributes': attributes,
             'project_code': project_code,
             'priority': priority,
