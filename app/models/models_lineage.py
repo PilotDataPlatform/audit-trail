@@ -56,6 +56,10 @@ class CreationForm:
         else:
             self._attribute_map = {
                 'input_path': '',
+                'input_geid': '',
+                'output_geid': '',
+                'input_name': '',
+                'output_name': '',
                 'output_path': '',
                 'project_code': '',
                 'pipeline_name': '',
@@ -70,6 +74,38 @@ class CreationForm:
     @property
     def input_path(self):
         return self._attribute_map['input_path']
+
+    @property
+    def input_geid(self):
+        return self._attribute_map['input_geid']
+
+    @input_geid.setter
+    def input_geid(self, input_geid):
+        self._attribute_map['input_geid'] = input_geid
+
+    @property
+    def output_geid(self):
+        return self._attribute_map['output_geid']
+
+    @output_geid.setter
+    def output_geid(self, output_geid):
+        self._attribute_map['output_geid'] = output_geid
+
+    @property
+    def input_name(self):
+        return self._attribute_map['input_name']
+
+    @input_name.setter
+    def input_name(self, input_name):
+        self._attribute_map['input_name'] = input_name
+
+    @property
+    def output_name(self):
+        return self._attribute_map['output_name']
+
+    @output_name.setter
+    def output_name(self, output_name):
+        self._attribute_map['output_name'] = output_name
 
     @input_path.setter
     def input_path(self, input_path):
