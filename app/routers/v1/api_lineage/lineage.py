@@ -13,12 +13,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import httpx
 from common import LoggerFactory
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi_utils.cbv import cbv
 
 from app.commons.atlas.lineage_manager import SrvLineageMgr
+from app.config import ConfigClass
 from app.models.base_models import EAPIResponseCode
 from app.models.models_lineage import GETLineage
 from app.models.models_lineage import GETLineageResponse
@@ -26,7 +28,6 @@ from app.models.models_lineage import POSTLineage
 from app.models.models_lineage import POSTLineageResponse
 from app.models.models_lineage import creation_form_factory
 from app.resources.error_handler import catch_internal
-from app.resources.neo4j_helper import http_query_node
 
 router = APIRouter()
 _API_NAMESPACE = 'api_lineage'
@@ -40,12 +41,11 @@ class Lineage:
     @router.get('/', response_model=GETLineageResponse, summary='Get Lineage')
     @catch_internal(_API_NAMESPACE)
     async def get(self, params: GETLineage = Depends(GETLineage)):
-        """get lineage, query params: geid, direction defult(INPUT)"""
+        """get lineage, query params: id, direction defult(INPUT)"""
         api_response = GETLineageResponse()
-        geid = params.geid
+        _id = params.item_id
         type_name = 'file_data'
-
-        response = await self.lineage_mgr.get(geid, type_name, params.direction)
+        response = await self.lineage_mgr.get(_id, type_name, params.direction)
         self._logger.debug(f'Response of get is {response.text}')
         if response.status_code == 200:
             response_json = response.json()
@@ -54,7 +54,7 @@ class Lineage:
                 await self.add_display_path(response_json['guidEntityMap'])
                 pass
             else:
-                res_default_entity = await self.lineage_mgr.search_entity(geid, type_name=type_name)
+                res_default_entity = await self.lineage_mgr.search_entity(_id, type_name=type_name)
                 self._logger.info(f'The default_entity from atlas is: {str(res_default_entity.json())}')
                 if res_default_entity.status_code == 200 and len(res_default_entity.json()['entities']) > 0:
                     default_entity = res_default_entity.json()['entities'][0]
@@ -82,8 +82,8 @@ class Lineage:
         """
         add new lineage to the metadata service by payload
             {
-                'input_geid': '',
-                'output_geid': '',
+                'input_id': '',
+                'output_id': '',
                 'project_code': '',
                 'pipeline_name': '',
                 'description': '',
@@ -92,8 +92,8 @@ class Lineage:
         api_response = POSTLineageResponse()
         creation_form = {}
 
-        if data.input_geid == data.output_geid:
-            api_response.error_msg = 'Input and Output geid are the same'
+        if data.input_id == data.output_id:
+            api_response.error_msg = 'Input and Output id are the same'
             api_response.code = EAPIResponseCode.bad_request
             return api_response.json_response()
 
@@ -130,19 +130,24 @@ class Lineage:
             if value['typeName'] == 'Process':
                 continue
 
-            geid = value['attributes']['global_entity_id']
-            node_res = await http_query_node(geid)
-            if node_res.status_code != 200:
-                raise Exception('Neo4j error')
-            node_data = node_res.json()
-            self._logger.info(f'Node in Neo4j is: {str(node_data)}')
+            item_id = value['attributes']['global_entity_id']
+            async with httpx.AsyncClient(verify=False) as client:
+                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{item_id}')
+            if response.status_code != 200:
+                raise Exception('Error calling metadata service')
+            node_data = response.json()['result']
+            self._logger.info(f'Entity in metadata service is: {str(node_data)}')
             if len(node_data) == 0:
                 continue
 
-            labels = node_data[0]['labels']
+            labels = ['Greenroom' if node_data['zone'] == 0 else 'Core']
+            if node_data['archived']:
+                labels.append('TrashFile')
+
             value['attributes']['zone'] = labels
 
-            if 'display_path' in node_data[0]:
-                value['attributes']['display_path'] = node_data[0]['display_path']
+            if node_data['parent_path']:
+                display_path = '{}/{}'.format(node_data['parent_path'].replace('.', '/'), node_data['name'])
+                value['attributes']['display_path'] = display_path
             else:
                 value['attributes']['display_path'] = value['attributes']['full_path']

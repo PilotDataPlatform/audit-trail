@@ -29,4 +29,4 @@ def test_async_client():
 def mock_settings(monkeypatch):
     monkeypatch.setattr(ConfigClass, 'ELASTIC_SEARCH_SERVICE', 'http://elastic_search/')
     monkeypatch.setattr(ConfigClass, 'ATLAS_API', 'http://atlas_url/')
-    monkeypatch.setattr(ConfigClass, 'NEO4J_SERVICE', 'http://neo4j_service/')
+    monkeypatch.setattr(ConfigClass, 'METADATA_SERVICE', 'http://metadata_service/')
