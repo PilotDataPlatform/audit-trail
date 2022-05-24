@@ -41,11 +41,11 @@ class Lineage:
     @router.get('/', response_model=GETLineageResponse, summary='Get Lineage')
     @catch_internal(_API_NAMESPACE)
     async def get(self, params: GETLineage = Depends(GETLineage)):
-        """get lineage, query params: geid, direction defult(INPUT)"""
+        """get lineage, query params: id, direction defult(INPUT)"""
         api_response = GETLineageResponse()
-        geid = params.geid
+        _id = params.item_id
         type_name = 'file_data'
-        response = await self.lineage_mgr.get(geid, type_name, params.direction)
+        response = await self.lineage_mgr.get(_id, type_name, params.direction)
         self._logger.debug(f'Response of get is {response.text}')
         if response.status_code == 200:
             response_json = response.json()
@@ -54,7 +54,7 @@ class Lineage:
                 await self.add_display_path(response_json['guidEntityMap'])
                 pass
             else:
-                res_default_entity = await self.lineage_mgr.search_entity(geid, type_name=type_name)
+                res_default_entity = await self.lineage_mgr.search_entity(_id, type_name=type_name)
                 self._logger.info(f'The default_entity from atlas is: {str(res_default_entity.json())}')
                 if res_default_entity.status_code == 200 and len(res_default_entity.json()['entities']) > 0:
                     default_entity = res_default_entity.json()['entities'][0]
@@ -82,8 +82,8 @@ class Lineage:
         """
         add new lineage to the metadata service by payload
             {
-                'input_geid': '',
-                'output_geid': '',
+                'input_id': '',
+                'output_id': '',
                 'project_code': '',
                 'pipeline_name': '',
                 'description': '',
@@ -92,8 +92,8 @@ class Lineage:
         api_response = POSTLineageResponse()
         creation_form = {}
 
-        if data.input_geid == data.output_geid:
-            api_response.error_msg = 'Input and Output geid are the same'
+        if data.input_id == data.output_id:
+            api_response.error_msg = 'Input and Output id are the same'
             api_response.code = EAPIResponseCode.bad_request
             return api_response.json_response()
 
@@ -130,9 +130,9 @@ class Lineage:
             if value['typeName'] == 'Process':
                 continue
 
-            geid = value['attributes']['global_entity_id']
+            item_id = value['attributes']['global_entity_id']
             async with httpx.AsyncClient(verify=False) as client:
-                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{geid}')
+                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{item_id}')
             if response.status_code != 200:
                 raise Exception('Error calling metadata service')
             node_data = response.json()['result']

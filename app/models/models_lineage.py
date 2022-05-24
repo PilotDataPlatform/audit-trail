@@ -23,7 +23,7 @@ _logger = LoggerFactory('api_lineage_action').get_logger()
 
 
 class GETLineage(BaseModel):
-    geid: str
+    item_id: str
     direction: str = 'INPUT'
 
 
@@ -34,8 +34,8 @@ class GETLineageResponse(APIResponse):
 
 
 class POSTLineage(BaseModel):
-    input_geid: str
-    output_geid: str
+    input_id: str
+    output_id: str
     input_name: str
     output_name: str
     project_code: str
@@ -56,8 +56,8 @@ class CreationForm:
         else:
             self._attribute_map = {
                 'input_path': '',
-                'input_geid': '',
-                'output_geid': '',
+                'input_id': '',
+                'output_id': '',
                 'input_name': '',
                 'output_name': '',
                 'output_path': '',
@@ -76,20 +76,20 @@ class CreationForm:
         return self._attribute_map['input_path']
 
     @property
-    def input_geid(self):
-        return self._attribute_map['input_geid']
+    def input_id(self):
+        return self._attribute_map['input_id']
 
-    @input_geid.setter
-    def input_geid(self, input_geid):
-        self._attribute_map['input_geid'] = input_geid
+    @input_id.setter
+    def input_id(self, input_id):
+        self._attribute_map['input_id'] = input_id
 
     @property
-    def output_geid(self):
-        return self._attribute_map['output_geid']
+    def output_id(self):
+        return self._attribute_map['output_id']
 
-    @output_geid.setter
-    def output_geid(self, output_geid):
-        self._attribute_map['output_geid'] = output_geid
+    @output_id.setter
+    def output_id(self, output_id):
+        self._attribute_map['output_id'] = output_id
 
     @property
     def input_name(self):
@@ -155,8 +155,8 @@ class CreationForm:
 def creation_form_factory(post_form):
     try:
         my_form = CreationForm()
-        my_form.input_geid = post_form.input_geid
-        my_form.output_geid = post_form.output_geid
+        my_form.input_id = post_form.input_id
+        my_form.output_id = post_form.output_id
         my_form.input_name = post_form.input_name
         my_form.output_name = post_form.output_name
         my_form.project_code = post_form.project_code

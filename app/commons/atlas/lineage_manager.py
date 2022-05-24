@@ -51,8 +51,8 @@ class SrvLineageMgr(metaclass=MetaService):
         input_file_name = creation_form.input_name
         output_file_name = creation_form.output_name
 
-        self._logger.debug(f'[SrvLineageMgr]input_file_path: {creation_form.input_geid}')
-        self._logger.debug(f'[SrvLineageMgr]output_file_path: {creation_form.output_geid}')
+        self._logger.debug(f'[SrvLineageMgr]input_file_path: {creation_form.input_id}')
+        self._logger.debug(f'[SrvLineageMgr]output_file_path: {creation_form.output_id}')
         current_timestamp = time() if not creation_form.process_timestamp else creation_form.process_timestamp
         qualifiedName = '{}:{}:{}:{}:to:{}'.format(
             creation_form.project_code,
@@ -61,8 +61,8 @@ class SrvLineageMgr(metaclass=MetaService):
             input_file_name,
             output_file_name,
         )
-        input_guid = await self.get_guid_by_geid(creation_form.input_geid, typenames[0])
-        output_guid = await self.get_guid_by_geid(creation_form.output_geid, typenames[1])
+        input_guid = await self.get_guid_by_id(creation_form.input_id, typenames[0])
+        output_guid = await self.get_guid_by_id(creation_form.output_id, typenames[1])
         atlas_post_form_json = {
             'entities': [
                 {
@@ -91,22 +91,21 @@ class SrvLineageMgr(metaclass=MetaService):
             )
         return res
 
-    async def get(self, geid, type_name, direction, depth=50):
+    async def get(self, _id, type_name, direction, depth=50):
         url = ConfigClass.ATLAS_API + self.lineage_endpoint + '/{}'.format(type_name)
         self._logger.debug(f'Url is: {url}')
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(
-                url,
-                params={'attr:global_entity_id': geid, 'depth': depth, 'direction': direction},
+                url, params={'attr:global_entity_id': _id, 'depth': depth, 'direction': direction},
                 auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
             )
         return response
 
-    async def search_entity(self, global_entity_id, type_name=None):
+    async def search_entity(self, _id, type_name=None):
         url = ConfigClass.ATLAS_API + self.search_endpoint
         self._logger.debug(f'LIne 97 Url is: {url}')
         typeName = type_name if type_name else 'nfs_file_processed'
-        params = {'attrName': 'global_entity_id', 'typeName': typeName, 'attrValuePrefix': global_entity_id}
+        params = {'attrName': 'global_entity_id', 'typeName': typeName, 'attrValuePrefix': _id}
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(
                 url, timeout=100, params=params, auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD)
@@ -114,16 +113,16 @@ class SrvLineageMgr(metaclass=MetaService):
         if response.status_code == 200 and response.json().get('entities'):
             return response
         else:
-            raise Exception(f'Not Found Entity: {global_entity_id}')
+            raise Exception(f'Not Found Entity: {_id}')
 
-    async def get_guid_by_geid(self, geid, type_name=None):
-        search_res = await self.search_entity(geid, type_name)
+    async def get_guid_by_id(self, _id, type_name=None):
+        search_res = await self.search_entity(_id, type_name)
         if search_res.status_code == 200:
             my_json = search_res.json()
             self._logger.debug(f'[SrvLineageMgr]search_res: {my_json}')
             entities = my_json['entities']
-            found = [entity for entity in entities if entity['attributes']['global_entity_id'] == geid]
+            found = [entity for entity in entities if entity['attributes']['global_entity_id'] == _id]
             return found[0]['guid'] if found else None
         else:
-            self._logger.error(f'Error when get_guid_by_geid: {search_res.text}')
+            self._logger.error(f'Error when get_guid_by_id: {search_res.text}')
             return None

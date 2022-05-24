@@ -20,7 +20,7 @@ test_file_entity_api = '/v1/entity/file'
 
 async def test_create_file_metadata(test_async_client, httpx_mock):
     payload = {
-        'global_entity_id': 'fake_geid',
+        'global_entity_id': 'fake_id',
         'operator': 'test_user',
         'zone': 'gr',
         'file_size': 1234,
@@ -38,7 +38,7 @@ async def test_create_file_metadata(test_async_client, httpx_mock):
     }
     httpx_mock.add_response(
         method='PUT',
-        url='http://elastic_search/files/_doc/fake_geid',
+        url='http://elastic_search/files/_doc/fake_id',
         json={
             '_index': 'unittest',
             '_type': 'operation_logs',
@@ -102,7 +102,7 @@ async def test_query_file_meta_with_manifest_should_return_200(test_async_client
 
 async def test_update_file_meta_should_return_200(test_async_client, httpx_mock):
     query = {
-        'global_entity_id': 'fake_geid',
+        'global_entity_id': 'fake_id',
         'updated_fields': {
             'archived': True,
         },
@@ -110,11 +110,11 @@ async def test_update_file_meta_should_return_200(test_async_client, httpx_mock)
 
     httpx_mock.add_response(
         method='POST',
-        url='http://elastic_search/files/_update/fake_geid',
+        url='http://elastic_search/files/_update/fake_id',
         json={
             '_index': 'files',
             '_type': '_doc',
-            '_id': 'fake_geid',
+            '_id': 'fake_id',
             '_version': 3,
             'result': 'updated',
             '_shards': {'total': 2, 'successful': 2, 'failed': 0},
@@ -131,14 +131,14 @@ async def test_update_file_meta_should_return_200(test_async_client, httpx_mock)
 
 async def test_update_file_meta_with_es_failed_should_return_500(test_async_client, httpx_mock):
     query = {
-        'global_entity_id': 'fake_geid',
+        'global_entity_id': 'fake_id',
         'updated_fields': {
             'archived': True,
         },
     }
 
     httpx_mock.add_response(
-        method='POST', url='http://elastic_search/files/_update/fake_geid', json={'result': 'failed'}, status_code=500
+        method='POST', url='http://elastic_search/files/_update/fake_id', json={'result': 'failed'}, status_code=500
     )
     res = await test_async_client.put(test_file_entity_api, json=query)
     response = res.json()
