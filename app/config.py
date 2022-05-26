@@ -61,6 +61,7 @@ class Settings(BaseSettings):
 
         self.ELASTIC_SEARCH_SERVICE += '/'
         self.ATLAS_API += '/'
+        self.METADATA_SERVICE += '/v1/'
 
     class Config:
         env_file = '.env'

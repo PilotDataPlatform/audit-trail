@@ -129,10 +129,9 @@ class Lineage:
         for _, value in guidEntityMap.items():
             if value['typeName'] == 'Process':
                 continue
-
             item_id = value['attributes']['global_entity_id']
             async with httpx.AsyncClient(verify=False) as client:
-                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{item_id}')
+                response = await client.get(f'{ConfigClass.METADATA_SERVICE}item/{item_id}/')
             if response.status_code != 200:
                 raise Exception('Error calling metadata service')
             node_data = response.json()['result']

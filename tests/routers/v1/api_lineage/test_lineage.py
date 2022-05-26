@@ -68,7 +68,7 @@ async def test_get_lineage_should_return_200(test_async_client, httpx_mock):
     )
     httpx_mock.add_response(
         method='GET',
-        url='http://metadata_service/item/fake_item_id',
+        url='http://metadata_service/v1/item/fake_item_id/',
         json={
             'result': {
                 'id': 'e09f1614-9301-417a-868b-7ce421dc3g6b',
