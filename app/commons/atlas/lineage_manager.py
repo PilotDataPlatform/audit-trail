@@ -33,18 +33,12 @@ class SrvLineageMgr(metaclass=MetaService):
         self.entity_bulk_endpoint = 'api/atlas/v2/entity/bulk'
         self.search_endpoint = 'api/atlas/v2/search/attribute'
 
-    def lineage_to_typename(self, pipeline_name):
-        """return (parent_type, child_type)"""
-        return {
-            EPipeline.dicom_edit.name: (EDataType.nfs_file.name, EDataType.nfs_file_processed.name),
-            EPipeline.data_transfer.name: (EDataType.nfs_file.name, EDataType.nfs_file_processed.name),
-        }.get(pipeline_name, (EDataType.nfs_file.name, EDataType.nfs_file_processed.name))
-
     async def create(self, creation_form: CreationForm, version='v1'):
         """create lineage in Atlas."""
         # v2 uses new entity type, v1 uses old one
         typenames = (
-            self.lineage_to_typename(creation_form.pipeline_name) if version == 'v1' else ['file_data', 'file_data']
+            (EDataType.nfs_file.name, EDataType.nfs_file_processed.name) if version == 'v1' else [
+                'file_data', 'file_data']
         )
         self._logger.info(f'_________typenames is: {typenames}')
         # to atlas post form
