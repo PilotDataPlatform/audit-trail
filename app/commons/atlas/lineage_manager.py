@@ -20,7 +20,6 @@ from common import LoggerFactory
 
 from app.config import ConfigClass
 from app.models.data_models import EDataType
-from app.models.data_models import EPipeline
 from app.models.meta_class import MetaService
 from app.models.models_lineage import CreationForm
 
@@ -37,8 +36,9 @@ class SrvLineageMgr(metaclass=MetaService):
         """create lineage in Atlas."""
         # v2 uses new entity type, v1 uses old one
         typenames = (
-            (EDataType.nfs_file.name, EDataType.nfs_file_processed.name) if version == 'v1' else [
-                'file_data', 'file_data']
+            (EDataType.nfs_file.name, EDataType.nfs_file_processed.name)
+            if version == 'v1'
+            else ['file_data', 'file_data']
         )
         self._logger.info(f'_________typenames is: {typenames}')
         # to atlas post form
@@ -90,7 +90,8 @@ class SrvLineageMgr(metaclass=MetaService):
         self._logger.debug(f'Url is: {url}')
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(
-                url, params={'attr:global_entity_id': _id, 'depth': depth, 'direction': direction},
+                url,
+                params={'attr:global_entity_id': _id, 'depth': depth, 'direction': direction},
                 auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
             )
         return response
