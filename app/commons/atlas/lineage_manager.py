@@ -20,7 +20,6 @@ from common import LoggerFactory
 
 from app.config import ConfigClass
 from app.models.data_models import EDataType
-from app.models.data_models import EPipeline
 from app.models.meta_class import MetaService
 from app.models.models_lineage import CreationForm
 
@@ -33,18 +32,13 @@ class SrvLineageMgr(metaclass=MetaService):
         self.entity_bulk_endpoint = 'api/atlas/v2/entity/bulk'
         self.search_endpoint = 'api/atlas/v2/search/attribute'
 
-    def lineage_to_typename(self, pipeline_name):
-        """return (parent_type, child_type)"""
-        return {
-            EPipeline.dicom_edit.name: (EDataType.nfs_file.name, EDataType.nfs_file_processed.name),
-            EPipeline.data_transfer.name: (EDataType.nfs_file.name, EDataType.nfs_file_processed.name),
-        }.get(pipeline_name, (EDataType.nfs_file.name, EDataType.nfs_file_processed.name))
-
     async def create(self, creation_form: CreationForm, version='v1'):
         """create lineage in Atlas."""
         # v2 uses new entity type, v1 uses old one
         typenames = (
-            self.lineage_to_typename(creation_form.pipeline_name) if version == 'v1' else ['file_data', 'file_data']
+            (EDataType.nfs_file.name, EDataType.nfs_file_processed.name)
+            if version == 'v1'
+            else ['file_data', 'file_data']
         )
         self._logger.info(f'_________typenames is: {typenames}')
         # to atlas post form
@@ -96,7 +90,8 @@ class SrvLineageMgr(metaclass=MetaService):
         self._logger.debug(f'Url is: {url}')
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(
-                url, params={'attr:global_entity_id': _id, 'depth': depth, 'direction': direction},
+                url,
+                params={'attr:global_entity_id': _id, 'depth': depth, 'direction': direction},
                 auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
             )
         return response
