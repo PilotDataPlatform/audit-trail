@@ -82,6 +82,7 @@ class SrvLineageMgr(metaclass=MetaService):
                 json=atlas_post_form_json,
                 auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
                 headers=headers,
+                timeout=300,
             )
         return res
 
