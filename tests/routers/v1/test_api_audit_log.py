@@ -30,7 +30,7 @@ async def test_create_audit_log_should_return_200_successed(test_async_client, h
 
     httpx_mock.add_response(
         method='POST',
-        url='http://elastic_search/unittest/operation_logs',
+        url='http://elastic_search:123/unittest/operation_logs',
         json={
             '_index': 'unittest',
             '_type': 'operation_logs',
@@ -63,7 +63,7 @@ async def test_create_audit_log_failed_should_return_500_internal(test_async_cli
 
     httpx_mock.add_response(
         method='POST',
-        url='http://elastic_search/unittest/operation_logs',
+        url='http://elastic_search:123/unittest/operation_logs',
         json={'code': 500, 'error_msg': 'mock error', 'result': ''},
         status_code=500,
     )
@@ -84,7 +84,7 @@ async def test_query_audit_log_should_return_200(test_async_client, httpx_mock):
     }
     httpx_mock.add_response(
         method='GET',
-        url='http://elastic_search/unittest/operation_logs/_search',
+        url='http://elastic_search:123/unittest/operation_logs/_search',
         json={'hits': {'hits': 'mock_hits', 'total': {'value': 1}}},
         status_code=200,
     )

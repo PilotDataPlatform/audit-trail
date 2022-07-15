@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import time
+import pdb
 from datetime import datetime
 from datetime import timedelta
 from typing import Optional
@@ -61,7 +62,6 @@ class APIAuditLog:
 
         self.__logger.debug(f'Project of Audit log Creation: {project_code}')
         self.__logger.debug(f'Params of Audit log Creation: {action}, {operator}, {target}, {outcome}, {resource}')
-
         client = GEIDClient()
         geid = client.get_GEID()
 

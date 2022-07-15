@@ -14,14 +14,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fastapi import FastAPI
+from fastapi_health import health
 
 from app.routers import api_root
 from app.routers.v1 import api_audit_log
 from app.routers.v1 import api_file_meta
 from app.routers.v1.api_lineage import lineage
+from app.resources.health_check import atlas_check, es_check
 
 
 def api_registry(app: FastAPI):
+    app.add_api_route("/health", health([atlas_check, es_check], success_status=204), tags=['Health'])
     app.include_router(api_root.router)
     app.include_router(api_audit_log.router, prefix='/v1')
     app.include_router(lineage.router, prefix='/v1/lineage', tags=['lineage'])

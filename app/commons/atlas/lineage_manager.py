@@ -16,6 +16,7 @@
 from time import time
 
 import httpx
+import pdb
 from common import LoggerFactory
 
 from app.config import ConfigClass
@@ -28,6 +29,7 @@ class SrvLineageMgr(metaclass=MetaService):
     _logger = LoggerFactory('api_lineage_action').get_logger()
 
     def __init__(self):
+        self.ATLAS_API = f"http://{ConfigClass.ATLAS_HOST}:{ConfigClass.ATLAS_PORT}/"
         self.lineage_endpoint = 'api/atlas/v2/lineage/uniqueAttribute/type'
         self.entity_bulk_endpoint = 'api/atlas/v2/entity/bulk'
         self.search_endpoint = 'api/atlas/v2/search/attribute'
@@ -76,9 +78,10 @@ class SrvLineageMgr(metaclass=MetaService):
         self._logger.debug(f'[SrvLineageMgr]atlas_post_form_json: {atlas_post_form_json}')
         # create atlas lineage
         headers = {'content-type': 'application/json'}
+        url=self.ATLAS_API + self.entity_bulk_endpoint
         async with httpx.AsyncClient(verify=False) as client:
             res = await client.post(
-                ConfigClass.ATLAS_API + self.entity_bulk_endpoint,
+                url=self.ATLAS_API + self.entity_bulk_endpoint,
                 json=atlas_post_form_json,
                 auth=(ConfigClass.ATLAS_ADMIN, ConfigClass.ATLAS_PASSWD),
                 headers=headers,
@@ -87,7 +90,7 @@ class SrvLineageMgr(metaclass=MetaService):
         return res
 
     async def get(self, _id, type_name, direction, depth=50):
-        url = ConfigClass.ATLAS_API + self.lineage_endpoint + '/{}'.format(type_name)
+        url = self.ATLAS_API + self.lineage_endpoint + '/{}'.format(type_name)
         self._logger.debug(f'Url is: {url}')
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.get(
@@ -98,7 +101,7 @@ class SrvLineageMgr(metaclass=MetaService):
         return response
 
     async def search_entity(self, _id, type_name=None):
-        url = ConfigClass.ATLAS_API + self.search_endpoint
+        url = self.ATLAS_API + self.search_endpoint
         self._logger.debug(f'LIne 97 Url is: {url}')
         typeName = type_name if type_name else 'nfs_file_processed'
         params = {'attrName': 'global_entity_id', 'typeName': typeName, 'attrValuePrefix': _id}

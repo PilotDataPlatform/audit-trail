@@ -21,7 +21,7 @@ async def test_get_lineage_should_return_200(test_async_client, httpx_mock):
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/lineage/uniqueAttribute/type/file_data'
+            'http://altas:123/api/atlas/v2/lineage/uniqueAttribute/type/file_data'
             '?attr:global_entity_id=fake_item_id&depth=50&direction=INPUT'
         ),
         json={
@@ -36,7 +36,7 @@ async def test_get_lineage_should_return_200(test_async_client, httpx_mock):
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/search/attribute'
+            'http://altas:123/api/atlas/v2/search/attribute'
             '?attrName=global_entity_id&typeName=file_data&attrValuePrefix=fake_item_id'
         ),
         json={
@@ -109,7 +109,7 @@ async def test_get_lineage_with_atlas_error_should_return_404(test_async_client,
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/lineage/uniqueAttribute/type/file_data'
+            'http://altas:123/api/atlas/v2/lineage/uniqueAttribute/type/file_data'
             '?attr:global_entity_id=fake_item_id&depth=50&direction=INPUT'
         ),
         json={'errorCode': 'ATLAS-404'},
@@ -133,7 +133,7 @@ async def test_create_lineage_should_return_200(test_async_client, httpx_mock):
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/search/attribute'
+            'http://altas:123/api/atlas/v2/search/attribute'
             '?attrName=global_entity_id&typeName=file_data&attrValuePrefix=fake_input_id'
         ),
         json={
@@ -149,7 +149,7 @@ async def test_create_lineage_should_return_200(test_async_client, httpx_mock):
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/search/attribute'
+            'http://altas:123/api/atlas/v2/search/attribute'
             '?attrName=global_entity_id&typeName=file_data&attrValuePrefix=fake_output_id'
         ),
         json={
@@ -164,7 +164,7 @@ async def test_create_lineage_should_return_200(test_async_client, httpx_mock):
     )
     httpx_mock.add_response(
         method='POST',
-        url='http://atlas_url/api/atlas/v2/entity/bulk',
+        url='http://altas:123/api/atlas/v2/entity/bulk',
         json={'mutatedEntities': {'CREATE': []}},
         status_code=200,
     )
@@ -200,7 +200,7 @@ async def test_create_lineage_with_not_found_entity_should_return_403(test_async
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/search/attribute'
+            'http://altas:123/api/atlas/v2/search/attribute'
             '?attrName=global_entity_id&typeName=file_data&attrValuePrefix=fake_input_id'
         ),
         json={
@@ -216,7 +216,7 @@ async def test_create_lineage_with_not_found_entity_should_return_403(test_async
     httpx_mock.add_response(
         method='GET',
         url=(
-            'http://atlas_url/api/atlas/v2/search/attribute'
+            'http://altas:123/api/atlas/v2/search/attribute'
             '?attrName=global_entity_id&typeName=file_data&attrValuePrefix=fake_output_id'
         ),
         json={'entities': []},
