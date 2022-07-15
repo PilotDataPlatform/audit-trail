@@ -14,15 +14,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import httpx
-import pdb
 from common import LoggerFactory
 
 from app.config import ConfigClass
 
 __logger = LoggerFactory('es_helper').get_logger()
+ELASTIC_SEARCH_URL = f'http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/'
+
 
 async def exact_search(es_type, es_index, page, page_size, params, sort_by=None, sort_type=None):
-    ELASTIC_SEARCH_URL = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/"
     url = ELASTIC_SEARCH_URL + '{}/{}/_search'.format(es_index, es_type)
     __logger.info(f'exact_search_url is {url}')
 
@@ -59,8 +59,7 @@ async def exact_search(es_type, es_index, page, page_size, params, sort_by=None,
 
 
 async def insert_one(es_type, es_index, data):
-    # ELASTIC_SEARCH_URL = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/"
-    url = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/" + '{}/{}'.format(es_index, es_type)
+    url = ELASTIC_SEARCH_URL + '{}/{}'.format(es_index, es_type)
     __logger.debug(f'es url is: {url}')
 
     async with httpx.AsyncClient(verify=False) as client:
@@ -70,7 +69,6 @@ async def insert_one(es_type, es_index, data):
 
 
 async def insert_one_by_id(es_type, es_index, data, id_):
-    ELASTIC_SEARCH_URL = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/"
     url = ELASTIC_SEARCH_URL + '{}/{}/{}'.format(es_index, es_type, id_)
     __logger.debug(f'es url is: {url}')
 
@@ -84,7 +82,6 @@ async def insert_one_by_id(es_type, es_index, data, id_):
 
 
 async def update_one_by_id(es_index, id_, fields):
-    ELASTIC_SEARCH_URL = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/"
     url = ELASTIC_SEARCH_URL + '{}/_update/{}'.format(es_index, id_)
     __logger.debug(f'update es url is: {url}')
     request_body = {'doc': fields}
@@ -95,7 +92,6 @@ async def update_one_by_id(es_index, id_, fields):
 
 
 async def file_search(es_index, page, page_size, data, sort_by=None, sort_type=None):  # noqa: C901
-    ELASTIC_SEARCH_URL = f"http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/"
     url = ELASTIC_SEARCH_URL + '{}/_search'.format(es_index)
     __logger.debug(f'es url is: {url}')
 

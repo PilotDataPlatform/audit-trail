@@ -16,7 +16,6 @@
 from time import time
 
 import httpx
-import pdb
 from common import LoggerFactory
 
 from app.config import ConfigClass
@@ -29,7 +28,7 @@ class SrvLineageMgr(metaclass=MetaService):
     _logger = LoggerFactory('api_lineage_action').get_logger()
 
     def __init__(self):
-        self.ATLAS_API = f"http://{ConfigClass.ATLAS_HOST}:{ConfigClass.ATLAS_PORT}/"
+        self.ATLAS_API = f'http://{ConfigClass.ATLAS_HOST}:{ConfigClass.ATLAS_PORT}/'
         self.lineage_endpoint = 'api/atlas/v2/lineage/uniqueAttribute/type'
         self.entity_bulk_endpoint = 'api/atlas/v2/entity/bulk'
         self.search_endpoint = 'api/atlas/v2/search/attribute'
@@ -78,7 +77,6 @@ class SrvLineageMgr(metaclass=MetaService):
         self._logger.debug(f'[SrvLineageMgr]atlas_post_form_json: {atlas_post_form_json}')
         # create atlas lineage
         headers = {'content-type': 'application/json'}
-        url=self.ATLAS_API + self.entity_bulk_endpoint
         async with httpx.AsyncClient(verify=False) as client:
             res = await client.post(
                 url=self.ATLAS_API + self.entity_bulk_endpoint,

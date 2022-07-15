@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import time
-import pdb
 from datetime import datetime
 from datetime import timedelta
 from typing import Optional
