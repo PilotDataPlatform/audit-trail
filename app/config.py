@@ -42,9 +42,6 @@ class Settings(BaseSettings):
     env: str = 'test'
     version = '0.1.0'
 
-    # disk mounts
-    NFS_ROOT_PATH: str = './'
-
     ATLAS_ADMIN: str
     ATLAS_PASSWD: str
     ATLAS_HOST: str
