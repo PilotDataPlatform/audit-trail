@@ -25,7 +25,7 @@ from app.routers.v1.api_lineage import lineage
 
 
 def api_registry(app: FastAPI):
-    app.add_api_route('/health', health([atlas_check, es_check], success_status=204), tags=['Health'])
+    app.add_api_route('/v1/health', health([atlas_check, es_check], success_status=204), tags=['Health'])
     app.include_router(api_root.router)
     app.include_router(api_audit_log.router, prefix='/v1')
     app.include_router(lineage.router, prefix='/v1/lineage', tags=['lineage'])
