@@ -38,7 +38,7 @@ async def test_create_file_metadata(test_async_client, httpx_mock):
     }
     httpx_mock.add_response(
         method='PUT',
-        url='http://elastic_search/files/_doc/fake_id',
+        url='http://elastic_search:123/files/_doc/fake_id',
         json={
             '_index': 'unittest',
             '_type': 'operation_logs',
@@ -60,7 +60,7 @@ async def test_query_file_meta_should_return_200(test_async_client, httpx_mock):
     query = json.dumps(query)
     httpx_mock.add_response(
         method='GET',
-        url='http://elastic_search/files/_search',
+        url='http://elastic_search:123/files/_search',
         json={
             'took': 6,
             'timed_out': False,
@@ -85,7 +85,7 @@ async def test_query_file_meta_with_manifest_should_return_200(test_async_client
     query = json.dumps(query)
     httpx_mock.add_response(
         method='GET',
-        url='http://elastic_search/files/_search',
+        url='http://elastic_search:123/files/_search',
         json={
             'took': 6,
             'timed_out': False,
@@ -110,7 +110,7 @@ async def test_update_file_meta_should_return_200(test_async_client, httpx_mock)
 
     httpx_mock.add_response(
         method='POST',
-        url='http://elastic_search/files/_update/fake_id',
+        url='http://elastic_search:123/files/_update/fake_id',
         json={
             '_index': 'files',
             '_type': '_doc',
@@ -138,7 +138,7 @@ async def test_update_file_meta_with_es_failed_should_return_500(test_async_clie
     }
 
     httpx_mock.add_response(
-        method='POST', url='http://elastic_search/files/_update/fake_id', json={'result': 'failed'}, status_code=500
+        method='POST', url='http://elastic_search:123/files/_update/fake_id', json={'result': 'failed'}, status_code=500
     )
     res = await test_async_client.put(test_file_entity_api, json=query)
     response = res.json()

@@ -19,10 +19,11 @@ from common import LoggerFactory
 from app.config import ConfigClass
 
 __logger = LoggerFactory('es_helper').get_logger()
+ELASTIC_SEARCH_URL = f'http://{ConfigClass.ELASTIC_SEARCH_HOST}:{ConfigClass.ELASTIC_SEARCH_PORT}/'
 
 
 async def exact_search(es_type, es_index, page, page_size, params, sort_by=None, sort_type=None):
-    url = ConfigClass.ELASTIC_SEARCH_SERVICE + '{}/{}/_search'.format(es_index, es_type)
+    url = ELASTIC_SEARCH_URL + '{}/{}/_search'.format(es_index, es_type)
     __logger.info(f'exact_search_url is {url}')
 
     search_params = []
@@ -58,17 +59,17 @@ async def exact_search(es_type, es_index, page, page_size, params, sort_by=None,
 
 
 async def insert_one(es_type, es_index, data):
-    url = ConfigClass.ELASTIC_SEARCH_SERVICE + '{}/{}'.format(es_index, es_type)
+    url = ELASTIC_SEARCH_URL + '{}/{}'.format(es_index, es_type)
     __logger.debug(f'es url is: {url}')
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(verify=False) as client:
         res = await client.post(url, json=data)
 
     return res.json()
 
 
 async def insert_one_by_id(es_type, es_index, data, id_):
-    url = ConfigClass.ELASTIC_SEARCH_SERVICE + '{}/{}/{}'.format(es_index, es_type, id_)
+    url = ELASTIC_SEARCH_URL + '{}/{}/{}'.format(es_index, es_type, id_)
     __logger.debug(f'es url is: {url}')
 
     async with httpx.AsyncClient() as client:
@@ -81,7 +82,7 @@ async def insert_one_by_id(es_type, es_index, data, id_):
 
 
 async def update_one_by_id(es_index, id_, fields):
-    url = ConfigClass.ELASTIC_SEARCH_SERVICE + '{}/_update/{}'.format(es_index, id_)
+    url = ELASTIC_SEARCH_URL + '{}/_update/{}'.format(es_index, id_)
     __logger.debug(f'update es url is: {url}')
     request_body = {'doc': fields}
     async with httpx.AsyncClient() as client:
@@ -91,7 +92,7 @@ async def update_one_by_id(es_index, id_, fields):
 
 
 async def file_search(es_index, page, page_size, data, sort_by=None, sort_type=None):  # noqa: C901
-    url = ConfigClass.ELASTIC_SEARCH_SERVICE + '{}/_search'.format(es_index)
+    url = ELASTIC_SEARCH_URL + '{}/_search'.format(es_index)
     __logger.debug(f'es url is: {url}')
 
     search_fields = []

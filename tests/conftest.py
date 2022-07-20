@@ -27,6 +27,8 @@ def test_async_client():
 
 @pytest.fixture(autouse=True)
 def mock_settings(monkeypatch):
-    monkeypatch.setattr(ConfigClass, 'ELASTIC_SEARCH_SERVICE', 'http://elastic_search/')
-    monkeypatch.setattr(ConfigClass, 'ATLAS_API', 'http://atlas_url/')
+    monkeypatch.setattr(ConfigClass, 'ELASTIC_SEARCH_HOST', 'elastic_search')
+    monkeypatch.setattr(ConfigClass, 'ELASTIC_SEARCH_PORT', 123)
+    monkeypatch.setattr(ConfigClass, 'ATLAS_HOST', 'altas')
+    monkeypatch.setattr(ConfigClass, 'ATLAS_PORT', 123)
     monkeypatch.setattr(ConfigClass, 'METADATA_SERVICE', 'http://metadata_service/v1/')

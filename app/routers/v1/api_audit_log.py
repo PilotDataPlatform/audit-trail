@@ -61,7 +61,6 @@ class APIAuditLog:
 
         self.__logger.debug(f'Project of Audit log Creation: {project_code}')
         self.__logger.debug(f'Params of Audit log Creation: {action}, {operator}, {target}, {outcome}, {resource}')
-
         client = GEIDClient()
         geid = client.get_GEID()
 

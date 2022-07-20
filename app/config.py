@@ -42,14 +42,13 @@ class Settings(BaseSettings):
     env: str = 'test'
     version = '0.1.0'
 
-    # disk mounts
-    NFS_ROOT_PATH: str = './'
-
     ATLAS_ADMIN: str
     ATLAS_PASSWD: str
+    ATLAS_HOST: str
+    ATLAS_PORT: int
 
-    ELASTIC_SEARCH_SERVICE: str
-    ATLAS_API: str
+    ELASTIC_SEARCH_HOST: str
+    ELASTIC_SEARCH_PORT: int
     METADATA_SERVICE: str
 
     OPEN_TELEMETRY_ENABLED: bool = False
@@ -59,8 +58,6 @@ class Settings(BaseSettings):
     def __init__(self):
         super().__init__()
 
-        self.ELASTIC_SEARCH_SERVICE += '/'
-        self.ATLAS_API += '/'
         self.METADATA_SERVICE += '/v1/'
 
     class Config:
