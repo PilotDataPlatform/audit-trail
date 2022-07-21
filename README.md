@@ -4,28 +4,51 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-green?style=for-the-badge)](https://www.python.org/)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/PilotDataPlatform/audit-trail/ci?style=for-the-badge)
 
+Service for creating the entity lineage in Atlas database
 
-## About
+## Getting Started
 
-Service for managing audit logs.
+### Prerequisites
 
-### Start
+This project is using [Poetry](https://python-poetry.org/docs/#installation) to handle the dependencies.
 
-1. Install [Docker](https://www.docker.com/get-started/).
-2. Start container with project application.
+    curl -sSL https://install.python-poetry.org | python3 -
 
-       docker compose up
+### Installation & Quick Start
 
-3. Visit http://127.0.0.1:5078/v1/api-doc for API documentation.
+1. Clone the project.
 
-### Development
+       https://github.com/PilotDataPlatform/audit-trail.git
 
-1. Install [Poetry](https://python-poetry.org/docs/#installation).
 2. Install dependencies.
 
        poetry install
 
-3. Add environment variables into `.env` taking in consideration `.env.schema`.
+3. Add environment variables into `.env` in case it's needed. Use `.env.schema` as a reference.
+
 4. Run application.
 
        poetry run python run.py
+
+### Startup using Docker
+
+This project can also be started using [Docker](https://www.docker.com/get-started/).
+
+1. To build and start the service within the Docker container, run:
+
+       docker compose up
+
+## Resources
+
+* [Pilot Platform API Documentation](https://pilotdataplatform.github.io/api-docs/)
+* [Pilot Platform Helm Charts](https://github.com/PilotDataPlatform/helm-charts/)
+
+## Contribution
+
+You can contribute the project in following ways:
+
+* Report a bug.
+* Suggest a feature.
+* Open a pull request for fixing issues or adding functionality. Please consider
+  using [pre-commit](https://pre-commit.com) in this case.
+* For general guidelines on how to contribute to the project, please take a look at the [contribution guides](CONTRIBUTING.md).
