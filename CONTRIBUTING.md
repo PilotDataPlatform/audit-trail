@@ -2,7 +2,7 @@
 
 ## Bug Reports
 
-For bug reports, [submit an issue](https://github.com/PilotDataPlatform/sandbox/issues).
+For bug reports, [submit an issue](https://github.com/PilotDataPlatform/audit-trail/issues).
 
 ## Pull Requests
 
